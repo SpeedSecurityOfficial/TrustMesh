@@ -1,0 +1,466 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GitHub加速域名与CRL-CDN链接 | TrustMesh</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', 'Microsoft YaHei', sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #0f2027 0%, #203a43 50%, #2c5364 100%);
+            color: #f0f8ff;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+            position: relative;
+            overflow-x: hidden;
+        }
+        
+        .container {
+            max-width: 1200px;
+            width: 100%;
+            background: rgba(20, 30, 40, 0.85);
+            backdrop-filter: blur(10px);
+            border-radius: 24px;
+            padding: 40px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+            border: 1px solid rgba(100, 150, 200, 0.2);
+            margin-top: 30px;
+            position: relative;
+            z-index: 2;
+            animation: fadeIn 1s ease-out;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        
+        .logo {
+            font-size: 3.5rem;
+            margin-bottom: 15px;
+            color: #4dabf7;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+        }
+        
+        .logo i {
+            filter: drop-shadow(0 0 8px rgba(77, 171, 247, 0.6));
+        }
+        
+        h1 {
+            font-size: 2.8rem;
+            margin-bottom: 10px;
+            background: linear-gradient(90deg, #4dabf7, #a5d8ff);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            line-height: 1.2;
+        }
+        
+        .subtitle {
+            font-size: 1.2rem;
+            color: #b3e0ff;
+            max-width: 800px;
+            margin: 0 auto;
+            line-height: 1.6;
+        }
+        
+        .section {
+            margin-bottom: 50px;
+        }
+        
+        .section-title {
+            font-size: 1.8rem;
+            margin-bottom: 25px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid rgba(77, 171, 247, 0.5);
+            color: #4dabf7;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .section-title i {
+            font-size: 1.5rem;
+        }
+        
+        .link-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(500px, 1fr));
+            gap: 20px;
+        }
+        
+        .link-card {
+            background: rgba(10, 25, 40, 0.7);
+            border-radius: 18px;
+            padding: 25px;
+            border-left: 5px solid #4dabf7;
+            box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.3);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        
+        .link-card:hover {
+            transform: translateY(-5px);
+            box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.3), 0 10px 25px rgba(77, 171, 247, 0.2);
+        }
+        
+        .link-title {
+            font-size: 1.3rem;
+            margin-bottom: 15px;
+            color: #ffd43b;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .link-title i {
+            font-size: 1.2rem;
+        }
+        
+        .link-url {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 15px;
+            border-radius: 12px;
+            font-family: monospace;
+            font-size: 1rem;
+            word-break: break-all;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            margin-bottom: 15px;
+            position: relative;
+        }
+        
+        .copy-btn {
+            background: rgba(77, 171, 247, 0.2);
+            color: #a5d8ff;
+            border: 1px solid rgba(77, 171, 247, 0.5);
+            padding: 8px 15px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        .copy-btn:hover {
+            background: rgba(77, 171, 247, 0.3);
+            color: #ffffff;
+        }
+        
+        .link-desc {
+            margin-top: 10px;
+            font-size: 0.95rem;
+            color: #b3e0ff;
+            line-height: 1.5;
+        }
+        
+        .floating-elements {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            z-index: 1;
+            pointer-events: none;
+        }
+        
+        .floating-element {
+            position: absolute;
+            border-radius: 50%;
+            background: rgba(77, 171, 247, 0.1);
+            animation: float 20s infinite linear;
+        }
+        
+        .floating-element:nth-child(1) {
+            width: 120px;
+            height: 120px;
+            top: 10%;
+            left: 5%;
+            animation-delay: 0s;
+        }
+        
+        .floating-element:nth-child(2) {
+            width: 80px;
+            height: 80px;
+            top: 70%;
+            right: 10%;
+            animation-delay: -5s;
+            background: rgba(255, 212, 59, 0.08);
+        }
+        
+        .floating-element:nth-child(3) {
+            width: 150px;
+            height: 150px;
+            bottom: 10%;
+            left: 15%;
+            animation-delay: -10s;
+            background: rgba(32, 201, 151, 0.05);
+        }
+        
+        footer {
+            margin-top: 40px;
+            text-align: center;
+            color: #a5d8ff;
+            font-size: 0.95rem;
+            padding: 20px;
+            width: 100%;
+            z-index: 2;
+        }
+        
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            color: #4dabf7;
+            text-decoration: none;
+            margin-top: 20px;
+            font-size: 1.1rem;
+            transition: color 0.3s ease;
+        }
+        
+        .back-link:hover {
+            color: #a5d8ff;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        @keyframes float {
+            0% { transform: translateY(0) rotate(0deg); }
+            25% { transform: translateY(-20px) rotate(90deg); }
+            50% { transform: translateY(0) rotate(180deg); }
+            75% { transform: translateY(20px) rotate(270deg); }
+            100% { transform: translateY(0) rotate(360deg); }
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                padding: 25px 20px;
+            }
+            
+            h1 {
+                font-size: 2.2rem;
+            }
+            
+            .logo {
+                font-size: 2.8rem;
+            }
+            
+            .link-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .link-card {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="floating-elements">
+        <div class="floating-element"></div>
+        <div class="floating-element"></div>
+        <div class="floating-element"></div>
+    </div>
+    
+    <div class="container">
+        <div class="header">
+            <div class="logo">
+                <i class="fas fa-shield-alt"></i>
+                <span>TrustMesh</span>
+            </div>
+            
+            <h1>GitHub加速域名与CRL-CDN链接</h1>
+            
+            <p class="subtitle">提供多个CDN加速节点，确保TrustMesh资源在全球范围内的快速访问和CRL服务的高可用性</p>
+        </div>
+        
+        <div class="section">
+            <h2 class="section-title">
+                <i class="fas fa-bolt"></i>
+                主CDN链接（自动选择最优节点）
+            </h2>
+            
+            <div class="link-grid">
+                <div class="link-card">
+                    <h3 class="link-title">
+                        <i class="fas fa-globe"></i>
+                        jsDelivr主节点
+                    </h3>
+                    <div class="link-url">https://cdn.jsdelivr.net/gh/SpeedSecurityOfficial/TrustMesh/</div>
+                    <button class="copy-btn" onclick="copyToClipboard(this)">
+                        <i class="far fa-copy"></i>
+                        复制链接
+                    </button>
+                    <p class="link-desc">jsDelivr主节点，自动选择全球最优访问路径，推荐使用</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="section">
+            <h2 class="section-title">
+                <i class="fas fa-server"></i>
+                中国大陆优化节点
+            </h2>
+            
+            <div class="link-grid">
+                <div class="link-card">
+                    <h3 class="link-title">
+                        <i class="fas fa-server"></i>
+                        Fastly节点
+                    </h3>
+                    <div class="link-url">https://fastly.jsdelivr.net/gh/SpeedSecurityOfficial/TrustMesh/</div>
+                    <button class="copy-btn" onclick="copyToClipboard(this)">
+                        <i class="far fa-copy"></i>
+                        复制链接
+                    </button>
+                    <p class="link-desc">Fastly提供的CDN节点，对中国大陆用户有良好优化</p>
+                </div>
+                
+                <div class="link-card">
+                    <h3 class="link-title">
+                        <i class="fas fa-server"></i>
+                        G-Core节点
+                    </h3>
+                    <div class="link-url">https://gcore.jsdelivr.net/gh/SpeedSecurityOfficial/TrustMesh/</div>
+                    <button class="copy-btn" onclick="copyToClipboard(this)">
+                        <i class="far fa-copy"></i>
+                        复制链接
+                    </button>
+                    <p class="link-desc">G-Core Labs提供的CDN节点，欧洲地区访问速度快</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="section">
+            <h2 class="section-title">
+                <i class="fas fa-cloud"></i>
+                其他CDN服务
+            </h2>
+            
+            <div class="link-grid">
+                <div class="link-card">
+                    <h3 class="link-title">
+                        <i class="fas fa-link"></i>
+                        Statically CDN
+                    </h3>
+                    <div class="link-url">https://cdn.statically.io/gh/SpeedSecurityOfficial/TrustMesh/</div>
+                    <button class="copy-btn" onclick="copyToClipboard(this)">
+                        <i class="far fa-copy"></i>
+                        复制链接
+                    </button>
+                    <p class="link-desc">稳定的全球CDN服务，提供快速的内容分发</p>
+                </div>
+                
+                <div class="link-card">
+                    <h3 class="link-title">
+                        <i class="fab fa-github"></i>
+                        GitHub原生访问
+                    </h3>
+                    <div class="link-url">https://raw.githubusercontent.com/SpeedSecurityOfficial/TrustMesh/main/</div>
+                    <button class="copy-btn" onclick="copyToClipboard(this)">
+                        <i class="far fa-copy"></i>
+                        复制链接
+                    </button>
+                    <p class="link-desc">GitHub原生raw访问，部分地区可能需要代理</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="section">
+            <h2 class="section-title">
+                <i class="fas fa-home"></i>
+                官方域名
+            </h2>
+            
+            <div class="link-grid">
+                <div class="link-card">
+                    <h3 class="link-title">
+                        <i class="fas fa-globe"></i>
+                        主站点
+                    </h3>
+                    <div class="link-url">https://trustguardia.dpdns.org</div>
+                    <button class="copy-btn" onclick="copyToClipboard(this)">
+                        <i class="far fa-copy"></i>
+                        复制链接
+                    </button>
+                    <p class="link-desc">TrustMesh主站点，提供完整服务功能</p>
+                </div>
+                
+                <div class="link-card">
+                    <h3 class="link-title">
+                        <i class="fab fa-github"></i>
+                        GitHub仓库
+                    </h3>
+                    <div class="link-url">https://github.com/SpeedSecurityOfficial/TrustMesh</div>
+                    <button class="copy-btn" onclick="copyToClipboard(this)">
+                        <i class="far fa-copy"></i>
+                        复制链接
+                    </button>
+                    <p class="link-desc">项目GitHub仓库地址，包含源代码和文档</p>
+                </div>
+            </div>
+        </div>
+        
+        <a href="index.html" class="back-link">
+            <i class="fas fa-arrow-left"></i>
+            返回欢迎页
+        </a>
+    </div>
+    
+    <footer>
+        <p>© 2024-2026 TrustMesh 安全网络 | GitHub 分站点 | 备用 CRL 服务节点</p>
+    </footer>
+
+    <script>
+        function copyToClipboard(button) {
+            const urlElement = button.previousElementSibling;
+            const textToCopy = urlElement.textContent;
+            
+            navigator.clipboard.writeText(textToCopy).then(() => {
+                const originalText = button.innerHTML;
+                button.innerHTML = '<i class="fas fa-check"></i> 已复制';
+                button.style.background = 'rgba(32, 201, 151, 0.3)';
+                button.style.borderColor = 'rgba(32, 201, 151, 0.7)';
+                
+                setTimeout(() => {
+                    button.innerHTML = originalText;
+                    button.style.background = '';
+                    button.style.borderColor = '';
+                }, 2000);
+            }).catch(err => {
+                console.error('复制失败: ', err);
+                alert('复制失败，请手动选择文本复制');
+            });
+        }
+        
+        document.addEventListener('DOMContentLoaded', function() {
+            const cards = document.querySelectorAll('.link-card');
+            cards.forEach(card => {
+                card.addEventListener('mouseenter', function() {
+                    this.style.transform = 'translateY(-5px)';
+                });
+                
+                card.addEventListener('mouseleave', function() {
+                    this.style.transform = 'translateY(0)';
+                });
+            });
+        });
+    </script>
+</body>
+</html>

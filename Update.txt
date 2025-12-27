@@ -1,0 +1,11 @@
+{
+"ID":"kp2025122701",
+"EV_OID":"2.16.156.112560.1.1.1",
+"OV_OID":"2.16.156.112560.1.1.2",
+"IV_OID":"2.16.156.112560.1.1.3",
+"DV_OID":"2.16.156.112560.1.1.4",
+"Root":"https://cdn.jsdelivr.net/gh/SpeedSecurityOfficial/TrustMesh/Root.cab",
+"Inc":"https://cdn.jsdelivr.net/gh/SpeedSecurityOfficial/TrustMesh/Inc.cab",
+"ban_crt":"https://cdn.jsdelivr.net/gh/SpeedSecurityOfficial/TrustMesh/ban_crt.cab",
+"EV":"https://cdn.jsdelivr.net/gh/SpeedSecurityOfficial/TrustMesh/Root.cab"
+}
